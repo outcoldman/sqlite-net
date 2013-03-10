@@ -2,7 +2,6 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <version>1.0.8</version>
-    <authors>Frank Krueger</authors>
     <owners>Frank Krueger,Tim Heuer</owners>
     <projectUrl>https://github.com/praeclarum/sqlite-net</projectUrl>
     <id>sqlite-net</id>

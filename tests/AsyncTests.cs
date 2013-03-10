@@ -92,7 +92,6 @@ namespace SQLite.Tests
 						doneEvent.Set();
 					}
 				});
-
 #if !NETFX_CORE
 				th.Start ();
 #endif
