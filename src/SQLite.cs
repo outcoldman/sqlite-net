@@ -1265,7 +1265,6 @@ namespace SQLite
             }
 #endif
 
-
 			var replacing = string.Compare (extra, "OR REPLACE", StringComparison.OrdinalIgnoreCase) == 0;
 			
 			var cols = replacing ? map.InsertOrReplaceColumns : map.InsertColumns;
