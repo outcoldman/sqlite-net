@@ -1623,6 +1623,7 @@ namespace SQLite
 	}
 
 	[AttributeUsage (AttributeTargets.Property)]
+    [Obsolete("SQLite always store strings without limitation")]
 	public class MaxLengthAttribute : Attribute
 	{
 		public int Value { get; private set; }
@@ -1878,7 +1879,6 @@ namespace SQLite
 
 	public static class Orm
 	{
-        public const int DefaultMaxStringLength = 140;
         public const string ImplicitPkName = "Id";
         public const string ImplicitIndexSuffix = "Id";
 
@@ -1905,21 +1905,23 @@ namespace SQLite
 		public static string SqlType (TableMapping.Column p, bool storeDateTimeAsTicks)
 		{
 			var clrType = p.ColumnType;
-			if (clrType == typeof(Boolean) || clrType == typeof(Byte) || clrType == typeof(UInt16) || clrType == typeof(SByte) || clrType == typeof(Int16) || clrType == typeof(Int32)) {
+			if (clrType == typeof(bool) 
+                || clrType == typeof(byte) 
+                || clrType == typeof(SByte)
+                || clrType == typeof(short)
+                || clrType == typeof(ushort) 
+                || clrType == typeof(int)
+                || clrType == typeof(uint) 
+                || clrType == typeof(long) 
+                || clrType == typeof(ulong)
+                || clrType == typeof(DateTimeOffset)
+                || clrType == typeof(TimeSpan))
+            {
 				return "integer";
-			} else if (clrType == typeof(UInt32) || clrType == typeof(Int64)) {
-				return "bigint";
-			} else if (clrType == typeof(Single) || clrType == typeof(Double) || clrType == typeof(Decimal)) {
-				return "float";
+			} else if (clrType == typeof(float) || clrType == typeof(double) || clrType == typeof(Decimal)) {
+				return "real";
 			} else if (clrType == typeof(String) || clrType == typeof(Uri)) {
-				int? len = p.MaxStringLength;
-
-				if (len.HasValue)
-					return "varchar(" + len.Value + ")";
-
-				return "varchar";
-			} else if (clrType == typeof(TimeSpan)) {
-                		return "bigint";
+				return "text";
 			} else if (clrType == typeof(DateTime)) {
 				return storeDateTimeAsTicks ? "bigint" : "datetime";
 			} else if (clrType == typeof(DateTimeOffset)) {
@@ -1933,7 +1935,7 @@ namespace SQLite
 			} else if (clrType == typeof(byte[])) {
 				return "blob";
             } else if (clrType == typeof(Guid)) {
-                return "varchar(36)";
+                return "text";
             } else {
 				throw new NotSupportedException ("Don't know about " + clrType);
 			}
