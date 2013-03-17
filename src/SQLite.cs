@@ -183,7 +183,10 @@ namespace SQLite
 			DatabasePath = databasePath;
 
 #if NETFX_CORE
-			SQLite3.SetDirectory(/*temp directory type*/2, Windows.Storage.ApplicationData.Current.TemporaryFolder.Path);
+		    if (!string.Equals(DatabasePath, ":memory:"))
+		    {
+		        SQLite3.SetDirectory( /*temp directory type*/2, Windows.Storage.ApplicationData.Current.TemporaryFolder.Path);
+		    }
 #endif
 
 			Sqlite3DatabaseHandle handle;
@@ -1551,7 +1554,7 @@ namespace SQLite
 			StoreDateTimeAsTicks = storeDateTimeAsTicks;
 
 #if NETFX_CORE
-			DatabasePath = System.IO.Path.Combine (MetroStyleDataPath, databasePath);
+            DatabasePath = string.Equals(databasePath, ":memory:", StringComparison.OrdinalIgnoreCase) ? databasePath : System.IO.Path.Combine(MetroStyleDataPath, databasePath);
 #else
 			DatabasePath = databasePath;
 #endif
@@ -1590,7 +1593,7 @@ namespace SQLite
 	{
 	}
 
-	[AttributeUsage (AttributeTargets.Property)]
+	[AttributeUsage (AttributeTargets.Property, AllowMultiple = true)]
 	public class IndexedAttribute : Attribute
 	{
 		public string Name { get; set; }

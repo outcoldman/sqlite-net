@@ -46,6 +46,12 @@ namespace SQLite
             _connectionString = new SQLiteConnectionString(databasePath, storeDateTimeAsTicks);
         }
 
+        public SQLiteAsyncConnection(string databasePath, SQLiteOpenFlags openFlags, bool storeDateTimeAsTicks = false)
+        {
+            _openFlags = openFlags;
+            _connectionString = new SQLiteConnectionString(databasePath, storeDateTimeAsTicks);
+        }
+
 		SQLiteConnectionWithLock GetConnection ()
 		{
 			return SQLiteConnectionPool.Shared.GetConnection (_connectionString, _openFlags);
@@ -402,7 +408,11 @@ namespace SQLite
 			public SQLiteConnectionString ConnectionString { get; private set; }
 			public SQLiteConnectionWithLock Connection { get; private set; }
 
+<<<<<<< HEAD
             public Entry (SQLiteConnectionString connectionString, SQLiteOpenFlags openFlags)
+=======
+			public Entry (SQLiteConnectionString connectionString, SQLiteOpenFlags openFlags)
+>>>>>>> Add support of inmemory DB. Add support of multiple indexes for column. Add db settings support for async connections.
 			{
 				ConnectionString = connectionString;
 				Connection = new SQLiteConnectionWithLock (connectionString, openFlags);
