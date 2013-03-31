@@ -48,6 +48,8 @@ using Sqlite3Statement = System.IntPtr;
 
 namespace SQLite
 {
+    using System.Collections.Concurrent;
+
     public class SQLiteException : Exception
 	{
 		public SQLite3.Result Result { get; private set; }
@@ -128,8 +130,8 @@ namespace SQLite
 	{
 		private bool _open;
 		private TimeSpan _busyTimeout;
-		private Dictionary<string, TableMapping> _mappings = null;
-		private Dictionary<string, TableMapping> _tables = null;
+		private Lazy<ConcurrentDictionary<string, TableMapping>> _mappings = new Lazy<ConcurrentDictionary<string, TableMapping>>(() => new ConcurrentDictionary<string, TableMapping>());
+        private Lazy<ConcurrentDictionary<string, TableMapping>> _tables = new Lazy<ConcurrentDictionary<string, TableMapping>>(() => new ConcurrentDictionary<string, TableMapping>());
 		private System.Diagnostics.Stopwatch _sw;
 		private long _elapsedMilliseconds = 0;
 
@@ -264,7 +266,7 @@ namespace SQLite
 		/// </summary>
 		public IEnumerable<TableMapping> TableMappings {
 			get {
-				return _tables != null ? _tables.Values : Enumerable.Empty<TableMapping> ();
+                return _tables.Value.Values;
 			}
 		}
 
@@ -283,15 +285,7 @@ namespace SQLite
 		/// </returns>
         public TableMapping GetMapping(Type type, CreateFlags createFlags = CreateFlags.None)
 		{
-			if (_mappings == null) {
-				_mappings = new Dictionary<string, TableMapping> ();
-			}
-			TableMapping map;
-			if (!_mappings.TryGetValue (type.FullName, out map)) {
-				map = new TableMapping (type, createFlags);
-				_mappings [type.FullName] = map;
-			}
-			return map;
+		    return _mappings.Value.GetOrAdd(type.FullName, s => new TableMapping (type, createFlags));
 		}
 		
 		/// <summary>
@@ -359,14 +353,7 @@ namespace SQLite
 		/// </returns>
         public int CreateTable(Type ty, CreateFlags createFlags = CreateFlags.None)
 		{
-			if (_tables == null) {
-				_tables = new Dictionary<string, TableMapping> ();
-			}
-			TableMapping map;
-			if (!_tables.TryGetValue (ty.FullName, out map)) {
-				map = GetMapping (ty, createFlags);
-				_tables.Add (ty.FullName, map);
-			}
+		    TableMapping map = _tables.Value.GetOrAdd(ty.FullName, s => GetMapping(ty, createFlags));
 			var query = "create table if not exists \"" + map.TableName + "\"(\n";
 			
 			var decls = map.Columns.Select (p => Orm.SqlDecl (p, StoreDateTimeAsTicks));
@@ -1503,7 +1490,7 @@ namespace SQLite
 			if (_open && Handle != NullHandle) {
 				try {
 					if (_mappings != null) {
-						foreach (var sqlInsertCommand in _mappings.Values) {
+						foreach (var sqlInsertCommand in _mappings.Value.Values) {
 							sqlInsertCommand.Dispose();
 						}
 					}
