@@ -304,6 +304,13 @@ namespace SQLite
 				}
 			});
 		}
+
+        public void Close()
+        {
+            var conn = GetConnection();
+            SQLiteConnectionPool.Shared.RemoveConnection(_connectionString);
+            conn.Close();
+        }
 	}
 
 	//
@@ -455,6 +462,16 @@ namespace SQLite
 				return entry.Connection;
 			}
 		}
+
+        public void RemoveConnection(SQLiteConnectionString connectionString)
+        {
+            lock (_entriesLock)
+            {
+                string key = connectionString.ConnectionString;
+
+                _entries.Remove(key);
+            }
+        }
 
 		/// <summary>
 		/// Closes all connections managed by this pool.
