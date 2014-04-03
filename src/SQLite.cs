@@ -1416,7 +1416,7 @@ namespace SQLite
 				throw new NotSupportedException ("Cannot delete " + map.TableName + ": it has no PK");
 			}
 			var q = string.Format ("delete from \"{0}\" where {1}", map.TableName, string.Join(" and ", pk.Select((x, index) => string.Format("\"{0}\" = ?{1}", x.Name, index + 1))));
-			var count = Execute (q, pk.GetValue (objectToDelete));
+            var count = Execute(q, pk.Select(x => x.GetValue(objectToDelete)).ToArray());
 			if (count > 0)
 				OnTableChanged (map, NotifyTableChangedAction.Delete);
 			return count;
@@ -1442,7 +1442,7 @@ namespace SQLite
 				throw new NotSupportedException ("Cannot delete " + map.TableName + ": it has no PK");
 			}
 			var q = string.Format("delete from \"{0}\" where {1}", map.TableName, string.Join(" and ", pk.Select((x, index) => string.Format("\"{0}\" = ?{1}", x.Name, index + 1))));
-			var count = Execute (q, primaryKey);
+			var count = Execute (q, primaryKeys);
 			if (count > 0)
 				OnTableChanged (map, NotifyTableChangedAction.Delete);
 			return count;
