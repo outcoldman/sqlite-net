@@ -1,18 +1,16 @@
-﻿using System.Resources;
+﻿using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System.Resources;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Portable")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("OutcoldSolutions.SQLite.Universal")]
+[assembly: AssemblyDescription("SQLite Universal Portable library.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Portable")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCompany("OutcoldSolutions")]
+[assembly: AssemblyProduct("OutcoldSolutions SQLite Universal Portable")]
+[assembly: AssemblyCopyright("\x00a9 OutcoldSolutions. All rights reserved.")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("en")]
 
@@ -26,5 +24,6 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.2.40404.*")]
+[assembly: AssemblyFileVersion("1.2.40404.1")]
+[assembly: CLSCompliant(false)]
