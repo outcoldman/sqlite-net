@@ -185,7 +185,7 @@ namespace SQLite
 
 			DatabasePath = databasePath;
 
-#if NETFX_CORE
+#if NETFX_CORE && WINDOWS81
 		    if (!string.Equals(DatabasePath, ":memory:"))
 		    {
 		        SQLite3.SetDirectory( /*temp directory type*/2, Windows.Storage.ApplicationData.Current.TemporaryFolder.Path);
@@ -1545,19 +1545,19 @@ namespace SQLite
 		public string DatabasePath { get; private set; }
 		public bool StoreDateTimeAsTicks { get; private set; }
 
-#if NETFX_CORE
+#if NETFX_CORE && WINDOWS81
 		static readonly string MetroStyleDataPath = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
 #endif
 
-		public SQLiteConnectionString (string databasePath, bool storeDateTimeAsTicks)
+        public SQLiteConnectionString (string databasePath, bool storeDateTimeAsTicks)
 		{
 			ConnectionString = databasePath;
 			StoreDateTimeAsTicks = storeDateTimeAsTicks;
 
-#if NETFX_CORE
+#if NETFX_CORE && WINDOWS81
             DatabasePath = string.Equals(databasePath, ":memory:", StringComparison.OrdinalIgnoreCase) ? databasePath : System.IO.Path.Combine(MetroStyleDataPath, databasePath);
 #else
-			DatabasePath = databasePath;
+            DatabasePath = databasePath;
 #endif
 		}
 	}
